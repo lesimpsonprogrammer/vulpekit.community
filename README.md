@@ -1,52 +1,71 @@
-# VulpeKit 🦊
+# VulpeKit Community 🦊
 
-**Community PostgreSQL toolkit by Momentum Data Solutions**
+**Community PostgreSQL developer tools from Momentum Data Solutions**
+
+> **Status:** Early development. This repository is currently named `vulpesdb.pb` on GitHub; the approved new name is `vulpekit.community` (rename pending).
 
 ## Purpose
 
-**VulpeKit** is the developer- and community-facing companion to **VulpesDB Master**. Its purpose is to provide accessible tools, documentation, and reusable workflows for building, learning, connecting to, and administering PostgreSQL databases.
+VulpeKit Community is the **public, developer-focused edition** of VulpeKit. It will offer approachable tools, examples, and documentation for connecting to and administering PostgreSQL, with reviewed community contributions. The toolkit is complementary to, but distinct from, the proprietary VulpesDB database hosting platform.
 
-- **Planned GitHub repository name:** `vulpekit` (currently hosted as `vulpesdb.pb` until the GitHub repository is renamed)
-- **Visibility:** Public
-- **Database foundation:** Upstream PostgreSQL 18.7
-- **Product family:** VulpesDB / Momentum Data Solutions
+### Three-repository organization
 
-## Intended capabilities
+| Repository | Visibility | Purpose |
+| --- | --- | --- |
+| **`vulpekit.community`** | Public | Approved community code, developer tooling and documentation |
+| **`vulpekit.master`** | Private; creation pending | Internal development, testing and governance of the toolkit and community |
+| **`vulpesdb.master`** | Private | Commercial PostgreSQL services and MDS database infrastructure |
 
-- Developer-friendly PostgreSQL setup and examples
-- Database connectivity and basic management tooling
-- Connection diagnostics and health checks
-- Community documentation and contributions
-- Secure defaults and compatibility with PostgreSQL
+The planned release flow is **VulpeKit Master → review and security checks → VulpeKit Community**. Nothing is automatically mirrored between private and public repositories.
 
-These are **development goals**, not statements that these features are already implemented or production-ready.
+## First development milestone
 
-## VulpeKit versus VulpesDB Master
+This first code change provides:
 
-| | VulpeKit | VulpesDB Master |
-|---|---|---|
-| Repository | `vulpekit` (rename pending) | `vulpesdb.master` |
-| Visibility | Public | Private |
-| Purpose | Community / developer tools | MDS commercial PostgreSQL infrastructure |
-| Audience | Developers, learners, contributors | Authorized MDS operations and customers |
-| Scope | Approved open components | Enterprise provisioning, multi-tenancy, billing, backups, recovery and integrations |
+- A Python 3.11+ package with the `vulpekit` command.
+- A **read-only PostgreSQL connectivity check** using Psycopg 3.
+- A conservative remote TLS default (`verify-full`).
+- Automated unit tests that do not need a live database.
+- GitHub Actions continuous integration.
 
-**Never copy proprietary code, secrets, internal deployment configuration or customer data from VulpesDB Master to VulpeKit.** Shared components may only be published after explicit review.
+The toolkit targets upstream **PostgreSQL 18.7** for development, but the current CLI uses standard PostgreSQL connectivity and is not an official packaged PostgreSQL server.
 
-## Download approvals
+## Local installation and use
 
-A **public GitHub repository cannot require approval to clone or download its source**. Approval can be required for separately distributed official packages through an access-controlled MDS service. If approval of all source downloads becomes necessary, the repository itself must be made private.
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+```
 
-## Funding
+Configure PostgreSQL using normal libpq environment variables, for example `PGHOST`, `PGUSER`, `PGDATABASE`, `PGPORT`, and secure authentication through your credential provider. **Never commit passwords or connection strings.**
 
-Community funding is planned. The GitHub funding button will be enabled only after an approved, active sponsorship destination is confirmed; no payment link is currently configured.
+```bash
+vulpekit check --timeout 5
+python -m unittest discover -s tests -v
+```
 
-## Security
+The default SSL mode is `verify-full`; supply a trusted server certificate and matching host name when connecting remotely. Local developers may explicitly choose another TLS mode only in their isolated development environment.
 
-Do not commit credentials, API keys, customer information or private database URLs. Report sensitive security concerns privately.
+## Planned next capabilities
 
-## Licensing
+1. Local PostgreSQL 18.7 test environment and health diagnostics.
+2. Read-only database metadata inspection and permission-aware commands.
+3. Improved developer documentation and configuration validation.
+4. A reviewed release and contribution pipeline.
 
-PostgreSQL uses the PostgreSQL License. The license for *original VulpeKit code* must be selected and added before publicly offering reuse rights. A public repository alone does not establish a license.
+These are **goals**, not existing production services.
 
-© Momentum Data Solutions. VulpeKit is not affiliated with the PostgreSQL Global Development Group.
+## Funding and distributions
+
+A GitHub funding button is planned, pending a verified sponsorship URL or account. No active funding destination is configured.
+
+**Public GitHub source can be downloaded without approval.** Approval can be required for separately distributed official software packages, but not for downloads from a public source repository.
+
+## Security and licensing
+
+Do not submit secrets, production configuration, private customer information, or proprietary code. Sensitive vulnerability reports should be handled privately.
+
+PostgreSQL uses the PostgreSQL License. A license for **original VulpeKit code** has not yet been selected; public visibility does not automatically grant reuse rights. Contributions will need an explicit license and contribution policy before broader public acceptance.
+
+© Momentum Data Solutions. VulpeKit is independent of the PostgreSQL Global Development Group.
