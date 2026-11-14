@@ -1,50 +1,52 @@
-# VulpesDB PB — Public Edition 🦊
+# VulpeKit 🦊
 
-**Open PostgreSQL tooling from Momentum Data Solutions**
+**Community PostgreSQL toolkit by Momentum Data Solutions**
 
-**Purpose:** VulpesDB PB (`vulpesdb.pb`) is the community-facing edition of VulpesDB. It aims to make PostgreSQL administration, connectivity, and developer tooling accessible, inspectable, and reusable by individuals and teams.
+## Purpose
 
-- **Visibility:** Public (subject to change by repository owner)
-- **Engine baseline:** Upstream PostgreSQL 18.7
-- **Website (planned):** https://vulpesdb.momentumdatasolutions.com/
-- **Tagline:** *Intelligent by Nature. Dependable by Design.*
+**VulpeKit** is the developer- and community-facing companion to **VulpesDB Master**. Its purpose is to provide accessible tools, documentation, and reusable workflows for building, learning, connecting to, and administering PostgreSQL databases.
+
+- **Planned GitHub repository name:** `vulpekit` (currently hosted as `vulpesdb.pb` until the GitHub repository is renamed)
+- **Visibility:** Public
+- **Database foundation:** Upstream PostgreSQL 18.7
+- **Product family:** VulpesDB / Momentum Data Solutions
 
 ## Intended capabilities
 
-- Local PostgreSQL development and documented setup
-- Database and connection management interfaces
-- Health checks and basic operational observability
-- Community documentation, examples, and issue reporting
-- Secure-by-default workflows and standard PostgreSQL compatibility
+- Developer-friendly PostgreSQL setup and examples
+- Database connectivity and basic management tooling
+- Connection diagnostics and health checks
+- Community documentation and contributions
+- Secure defaults and compatibility with PostgreSQL
 
-These are roadmap goals, **not claims of implemented or production-ready features**.
+These are **development goals**, not statements that these features are already implemented or production-ready.
 
-## How PB differs from Master
+## VulpeKit versus VulpesDB Master
 
-| | **VulpesDB PB** (this repository) | **VulpesDB Master** |
+| | VulpeKit | VulpesDB Master |
 |---|---|---|
-| GitHub | `vulpesdb.pb` | `vulpesdb.master` |
+| Repository | `vulpekit` (rename pending) | `vulpesdb.master` |
 | Visibility | Public | Private |
-| Purpose | Community/developer foundation | Proprietary managed database platform |
-| Audience | Developers and contributors | MDS operations and approved business customers |
-| Focus | Open tools and documentation | Enterprise provisioning, tenant isolation, managed services, billing, recovery and integrations |
+| Purpose | Community / developer tools | MDS commercial PostgreSQL infrastructure |
+| Audience | Developers, learners, contributors | Authorized MDS operations and customers |
+| Scope | Approved open components | Enterprise provisioning, multi-tenancy, billing, backups, recovery and integrations |
 
-Both editions are based on official PostgreSQL releases. **No proprietary code, production secrets, customer data, or private configurations may be copied from Master into PB without explicit authorization and review.**
+**Never copy proprietary code, secrets, internal deployment configuration or customer data from VulpesDB Master to VulpeKit.** Shared components may only be published after explicit review.
 
-## Download and access policy
+## Download approvals
 
-**Important:** Public GitHub repositories can be cloned or downloaded without approval. If we require approval *before obtaining source code*, this repository must be private, or distributable source must be stored in an access-controlled service rather than GitHub. We may separately require approval for **official packaged installers** distributed through an MDS-controlled portal, while the repository stays public.
+A **public GitHub repository cannot require approval to clone or download its source**. Approval can be required for separately distributed official packages through an access-controlled MDS service. If approval of all source downloads becomes necessary, the repository itself must be made private.
 
-## Support development
+## Funding
 
-VulpesDB PB welcomes community support. A GitHub Sponsor button will be activated when an approved, working funding destination is configured. No payment URL is currently asserted to be active.
+Community funding is planned. The GitHub funding button will be enabled only after an approved, active sponsorship destination is confirmed; no payment link is currently configured.
 
 ## Security
 
-Do not commit API keys, credentials, production connection strings, customer information, or internal infrastructure configuration. Use least privilege and encrypted connections. Report security issues privately rather than disclosing exploitable details in public issues.
+Do not commit credentials, API keys, customer information or private database URLs. Report sensitive security concerns privately.
 
-## Licensing and contributions
+## Licensing
 
-PostgreSQL itself is distributed under the **PostgreSQL License**. The license for original VulpesDB PB source must be selected and added explicitly before promoting this as an independently licensed open-source distribution. Public visibility alone does not grant rights to reuse original source. Contributions should be submitted through reviewable pull requests.
+PostgreSQL uses the PostgreSQL License. The license for *original VulpeKit code* must be selected and added before publicly offering reuse rights. A public repository alone does not establish a license.
 
-© Momentum Data Solutions. VulpesDB is independent of the PostgreSQL Global Development Group.
+© Momentum Data Solutions. VulpeKit is not affiliated with the PostgreSQL Global Development Group.
