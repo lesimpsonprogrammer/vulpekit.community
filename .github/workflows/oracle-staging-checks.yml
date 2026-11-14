@@ -1,0 +1,25 @@
+name: VulpeKit Oracle staging checks
+on:
+  push:
+    branches: ["feat/oracle-community-staging"]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate Python source
+        run: python -m compileall -q app tests
+      - name: Test staging health API
+        run: python -m unittest discover -s tests -p test_staging_api.py -v
+      - name: Validate Docker Compose configuration
+        run: |
+          export COMMUNITY_DOMAIN=example.com
+          export VULPEKIT_DB_PASSWORD=ci-only-placeholder-not-production
+          docker compose -f deploy/compose.yaml config --quiet
