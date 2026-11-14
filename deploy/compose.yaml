@@ -1,0 +1,64 @@
+# Isolated VulpeKit Community STAGING example for an Oracle Cloud VM.
+# Do NOT launch a publicly available database service using this alone.
+services:
+  web:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      COMMUNITY_DOMAIN: ${COMMUNITY_DOMAIN:?Set COMMUNITY_DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ../site:/srv:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+    security_opt:
+      - no-new-privileges:true
+
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.api
+    restart: unless-stopped
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: vulpekit_staging
+      PGUSER: vulpekit_staging
+      PGPASSWORD: ${VULPEKIT_DB_PASSWORD:?Set VULPEKIT_DB_PASSWORD in .env}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+
+  postgres:
+    image: postgres:18.7
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vulpekit_staging
+      POSTGRES_USER: vulpekit_staging
+      POSTGRES_PASSWORD: ${VULPEKIT_DB_PASSWORD:?Set VULPEKIT_DB_PASSWORD in .env}
+      PGDATA: /var/lib/postgresql/18/docker
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    # No host port: PostgreSQL is only available inside the private compose network.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vulpekit_staging -d vulpekit_staging"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
