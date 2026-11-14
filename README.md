@@ -2,7 +2,7 @@
 
 **Community PostgreSQL developer tools from Momentum Data Solutions**
 
-> **Status:** Early development. This repository is currently named `vulpesdb.pb` on GitHub; the approved new name is `vulpekit.community` (rename pending).
+> **Status:** Early development. Official public repository: `vulpekit.community`.
 
 ## Purpose
 
@@ -13,7 +13,7 @@ VulpeKit Community is the **public, developer-focused edition** of VulpeKit. It 
 | Repository | Visibility | Purpose |
 | --- | --- | --- |
 | **`vulpekit.community`** | Public | Approved community code, developer tooling and documentation |
-| **`vulpekit.master`** | Private; creation pending | Internal development, testing and governance of the toolkit and community |
+| **`VulpeKit.Master`** | Private; created | Internal development, testing and governance of the toolkit and community |
 | **`vulpesdb.master`** | Private | Commercial PostgreSQL services and MDS database infrastructure |
 
 The planned release flow is **VulpeKit Master → review and security checks → VulpeKit Community**. Nothing is automatically mirrored between private and public repositories.
