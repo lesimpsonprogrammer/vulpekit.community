@@ -1,0 +1,39 @@
+name: Community tenant isolation (ephemeral PostgreSQL)
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  tenant-isolation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:18.7
+        env:
+          POSTGRES_USER: vulpekit_ci
+          POSTGRES_DB: vulpekit_tenant_ci
+          POSTGRES_PASSWORD: disposable-tenant-ci-password
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U vulpekit_ci -d vulpekit_tenant_ci"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 12
+    env:
+      GITHUB_ACTIONS: "true"
+      VULPEKIT_TEST_MODE: ephemeral-ci-only
+      PGHOST: 127.0.0.1
+      PGPORT: "5432"
+      PGDATABASE: vulpekit_tenant_ci
+      PGUSER: vulpekit_ci
+      PGPASSWORD: disposable-tenant-ci-password
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install "psycopg[binary]>=3.2,<4"
+      - run: python scripts/test_tenant_isolation.py
