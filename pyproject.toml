@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vulpekit"
+version = "0.1.0a0"
+description = "Community PostgreSQL developer toolkit by Momentum Data Solutions"
+requires-python = ">=3.11"
+dependencies = ["psycopg[binary]>=3.2,<4"]
+
+[project.scripts]
+vulpekit = "vulpekit.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
