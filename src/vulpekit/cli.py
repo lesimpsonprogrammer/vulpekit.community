@@ -1,8 +1,11 @@
 """Minimal, read-only PostgreSQL connectivity and offline configuration diagnostics."""
 
 import argparse
+import json
 import os
 import sys
+
+from vulpekit.inspect import inspect_database
 
 
 def inspect_config(environ=None) -> list[str]:
@@ -46,6 +49,9 @@ def main(argv=None) -> int:
     check = commands.add_parser("check", help="Check configured PostgreSQL connectivity")
     check.add_argument("--timeout", type=int, default=5)
     commands.add_parser("doctor", help="Validate connection environment without opening a connection")
+    inspect_cmd = commands.add_parser("inspect", help="List SELECT-accessible schemas and relations as JSON")
+    inspect_cmd.add_argument("--timeout", type=int, default=5)
+    inspect_cmd.add_argument("--limit", type=int, default=100)
     args = parser.parse_args(argv)
 
     if args.command == "doctor":
@@ -55,6 +61,19 @@ def main(argv=None) -> int:
                 print(f"WARNING: {warning}")
             return 1
         print("PostgreSQL connection environment looks ready (connectivity not tested).")
+        return 0
+
+    if args.command == "inspect":
+        if not 1 <= args.timeout <= 30:
+            parser.error("--timeout must be between 1 and 30 seconds")
+        if not 1 <= args.limit <= 500:
+            parser.error("--limit must be between 1 and 500")
+        try:
+            report = inspect_database(timeout=args.timeout, limit=args.limit)
+        except Exception:
+            print("PostgreSQL inspection failed. Verify access and TLS.", file=sys.stderr)
+            return 1
+        print(json.dumps(report, indent=2))
         return 0
 
     if args.command == "check":
