@@ -17,7 +17,6 @@ if any(os.getenv(k) != v for k, v in EXPECTED.items()):
     raise SystemExit("Refusing to run outside dedicated ephemeral catalog CI")
 
 import psycopg
-from psycopg import sql
 from vulpekit.inspect import INSPECTION_SQL
 
 with psycopg.connect(sslmode="disable") as conn:
@@ -27,12 +26,12 @@ with psycopg.connect(sslmode="disable") as conn:
             cur.execute("GRANT catalog_reader TO vulpekit_catalog_ci")
             cur.execute('CREATE SCHEMA "catalog fixture"')
             cur.execute('CREATE SCHEMA "catalog hidden"')
-            cur.execute('CREATE TABLE "catalog fixture"."Order \"Details\" 🦊" (id integer)')
+            cur.execute('CREATE TABLE "catalog fixture"."Order ""Details"" 🦊" (id integer)')
             cur.execute('CREATE VIEW "catalog fixture"."Sales report" AS SELECT 1 AS id')
             cur.execute('CREATE TABLE "catalog fixture"."not granted" (id integer)')
             cur.execute('CREATE TABLE "catalog hidden"."private" (id integer)')
             cur.execute('GRANT USAGE ON SCHEMA "catalog fixture" TO catalog_reader')
-            cur.execute('GRANT SELECT ON "catalog fixture"."Order \"Details\" 🦊" TO catalog_reader')
+            cur.execute('GRANT SELECT ON "catalog fixture"."Order ""Details"" 🦊" TO catalog_reader')
             cur.execute('GRANT SELECT ON "catalog fixture"."Sales report" TO catalog_reader')
             cur.execute('GRANT SELECT ON "catalog hidden"."private" TO catalog_reader')
             cur.execute("SET ROLE catalog_reader")
