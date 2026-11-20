@@ -4,6 +4,28 @@ from __future__ import annotations
 import os
 
 
+# Shared by the CLI and its disposable PostgreSQL integration fixture.
+INSPECTION_SQL = """
+SELECT n.nspname,
+       c.relname,
+       CASE c.relkind
+           WHEN 'r' THEN 'table'
+           WHEN 'p' THEN 'partitioned_table'
+           WHEN 'v' THEN 'view'
+           WHEN 'm' THEN 'materialized_view'
+           WHEN 'f' THEN 'foreign_table'
+       END AS kind
+FROM pg_catalog.pg_class AS c
+JOIN pg_catalog.pg_namespace AS n ON n.oid = c.relnamespace
+WHERE c.relkind IN ('r', 'p', 'v', 'm', 'f')
+  AND n.nspname <> 'information_schema'
+  AND n.nspname NOT LIKE 'pg\\_%' ESCAPE '\\'
+  AND pg_catalog.has_schema_privilege(n.oid, 'USAGE')
+  AND pg_catalog.has_table_privilege(c.oid, 'SELECT')
+ORDER BY n.nspname, c.relname
+LIMIT %s
+"""
+
 def inspect_database(timeout: int = 5, limit: int = 100) -> dict:
     """Return visible user schemas and relations, without reading table rows."""
     if not 1 <= timeout <= 30:
@@ -22,29 +44,7 @@ def inspect_database(timeout: int = 5, limit: int = 100) -> dict:
         options="-c default_transaction_read_only=on -c statement_timeout=5000",
     ) as conn:
         with conn.cursor() as cursor:
-            cursor.execute(
-                """
-                SELECT n.nspname,
-                       c.relname,
-                       CASE c.relkind
-                           WHEN 'r' THEN 'table'
-                           WHEN 'p' THEN 'partitioned_table'
-                           WHEN 'v' THEN 'view'
-                           WHEN 'm' THEN 'materialized_view'
-                           WHEN 'f' THEN 'foreign_table'
-                       END AS kind
-                FROM pg_catalog.pg_class AS c
-                JOIN pg_catalog.pg_namespace AS n ON n.oid = c.relnamespace
-                WHERE c.relkind IN ('r', 'p', 'v', 'm', 'f')
-                  AND n.nspname <> 'information_schema'
-                  AND n.nspname NOT LIKE 'pg\\_%' ESCAPE '\\'
-                  AND pg_catalog.has_schema_privilege(n.oid, 'USAGE')
-                  AND pg_catalog.has_table_privilege(c.oid, 'SELECT')
-                ORDER BY n.nspname, c.relname
-                LIMIT %s
-                """,
-                (limit + 1,),
-            )
+            cursor.execute(INSPECTION_SQL, (limit + 1,))
             rows = cursor.fetchall()
     return {
         "relations": [
